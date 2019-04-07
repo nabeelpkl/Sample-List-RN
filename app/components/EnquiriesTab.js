@@ -3,30 +3,25 @@ import {
   View,
   FlatList,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import {
   getRandomColor,
 } from "utils";
-import data from './enquiry.json';
 import EnquiryItem from "./List/EnquiryItem";
 class EnquiriesTab extends React.Component {
 
   constructor(props) {
     super(props);
 
-    let newEnquiries = data.dataList.map((item) => {
-      item.circleColor = getRandomColor();
-
-      return item;
-    });
-
     this.state = {
-      enquiries: newEnquiries,
-    };
+      enquiries: null,
+      loading: true,
+      error: null,
+    }
   }
-
   componentDidMount() {
-
+    this.getEnquiries();
   }
 
   handleAddToFavourite = (index) => {
@@ -39,21 +34,50 @@ class EnquiriesTab extends React.Component {
 
   };
 
+  async getEnquiries() {
+    try {
+      let response = await fetch("http://www.mocky.io/v2/5c41920e0f0000543fe7b889");
+
+      if (response !== null && response.status === 200) {
+        const data = await response.json();
+        let newEnquiries = data.dataList.map((item) => {
+          item.circleColor = getRandomColor();
+
+          return item;
+        });
+        this.setState({ enquiries: newEnquiries, loading: false, error: null });
+      } else {
+        this.setState({ enquiries: null, loading: false, error: "Sorry. Something went wrong" });
+      }
+
+    } catch (e) {
+      console.log("Enquiry api error", e);
+      this.setState({ enquiries: null, loading: false, error: "Sorry. Something went wrong" });
+    }
+  }
+
   render() {
-    const { enquiries } = this.state;
+    const { enquiries, loading, error } = this.state;
     return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={enquiries}
-          renderItem={({ item, index }) => (
-            <EnquiryItem
-              item={item}
-              index={index}
-              onFavouritPress={() => this.handleAddToFavourite(index)}
-            />
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        {loading ? (<ActivityIndicator size="large" animating />) : enquiries ? (
+          <FlatList
+            data={enquiries}
+            renderItem={({ item, index }) => (
+              <EnquiryItem
+                item={item}
+                index={index}
+                onFavouritPress={() => this.handleAddToFavourite(index)}
+              />
+            )}
+            keyExtractor={item => `${item.enqId}`}
+          />
+        ) : (
+            <Text style={{ alignSelf: "center" }}>
+              {error}
+            </Text>
           )}
-          keyExtractor={item => `${item.enqId}`}
-        />
+
       </View>
     );
   }
