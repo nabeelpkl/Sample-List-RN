@@ -5,68 +5,34 @@ import {
   ActivityIndicator,
   Text,
 } from "react-native";
-import {
-  getRandomColor,
-} from "utils";
+import { inject, observer } from "mobx-react";
 import EnquiryItem from "./List/EnquiryItem";
 import Seperator from './List/Seperator';
 
 class EnquiriesTab extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      enquiries: null,
-      loading: true,
-      error: null,
-    }
-  }
   componentDidMount() {
-    this.getEnquiries();
+    const { enquiriesStore } = this.props;
+    enquiriesStore.getEnquiries();
   }
 
   handleAddToFavourite = (index) => {
-    let enquiries = [...this.state.enquiries];
-    let item = { ...enquiries[index] };
-    item.isStarred = !item.isStarred;
-    enquiries[index] = item;
-
-    this.setState({ enquiries });
-
+    const { enquiriesStore } = this.props;
+    enquiriesStore.onFavouriteClick(index);
   };
 
-  handleItemPress = (item) => {
+  handleItemPress = (item, index) => {
     this.props.navigation.navigate('Details', {
       data: item,
       type: "enquiry",
+      index
     });
   };
 
-  async getEnquiries() {
-    try {
-      let response = await fetch("http://www.mocky.io/v2/5c41920e0f0000543fe7b889");
-
-      if (response !== null && response.status === 200) {
-        const data = await response.json();
-        let newEnquiries = data.dataList.map((item) => {
-          item.circleColor = getRandomColor();
-
-          return item;
-        });
-        this.setState({ enquiries: newEnquiries, loading: false, error: null });
-      } else {
-        this.setState({ enquiries: null, loading: false, error: "Sorry. Something went wrong" });
-      }
-
-    } catch (e) {
-      console.log("Enquiry api error", e);
-      this.setState({ enquiries: null, loading: false, error: "Something went wrong" });
-    }
-  }
-
   render() {
-    const { enquiries, loading, error } = this.state;
+    const { enquiriesStore } = this.props;
+    const { enquiries, loading, errorMessage } = enquiriesStore;
+
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
         {loading ? (<ActivityIndicator size="large" animating />) : enquiries ? (
@@ -76,7 +42,7 @@ class EnquiriesTab extends React.Component {
               <EnquiryItem
                 item={item}
                 index={index}
-                onPress={() => this.handleItemPress(item)}
+                onPress={() => this.handleItemPress(item, index)}
                 onFavouritPress={() => this.handleAddToFavourite(index)}
               />
             )}
@@ -85,7 +51,7 @@ class EnquiriesTab extends React.Component {
           />
         ) : (
             <Text style={{ alignSelf: "center" }}>
-              {error}
+              {errorMessage}
             </Text>
           )}
 
@@ -94,4 +60,7 @@ class EnquiriesTab extends React.Component {
   }
 }
 
-export default EnquiriesTab;
+export default inject((stores, props) => {
+  const { enquiriesStore } = stores;
+  return { enquiriesStore };
+})(observer(EnquiriesTab));

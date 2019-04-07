@@ -6,62 +6,27 @@ import {
   Text,
 } from "react-native";
 import { getRandomColor } from "utils";
+import { inject, observer } from "mobx-react";
 import StudentItem from "./List/StudentItem";
 import Seperator from './List/Seperator';
 class StudentsTab extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    /*  let students = data.dataList.map((item) => {
-       item.circleColor = getRandomColor();
- 
-       return item;
-     }); */
-
-    this.state = {
-      students: null,
-      loading: true,
-      error: null,
-    };
-  }
-
   componentDidMount() {
-    this.getStudentsData();
+    const { studentsStore } = this.props;
+    studentsStore.getStudentsData();
   }
 
-  handleItemPress = (item) => {
-    console.log("navigate", this.props.navigation);
+  handleItemPress = (item,index) => {
     this.props.navigation.navigate('Details', {
       data: item,
       type: "student",
+      index,
     });
   };
 
-  async getStudentsData() {
-    try {
-      let response = await fetch("http://www.mocky.io/v2/5c41950b0f0000543fe7b8a2");
-
-      if (response !== null && response.status === 200) {
-        const data = await response.json();
-        let students = data.dataList.map((item) => {
-          item.circleColor = getRandomColor();
-
-          return item;
-        });
-        this.setState({ students, loading: false, error: null });
-      } else {
-        this.setState({ students: null, loading: false, error: "Sorry. Something went wrong" });
-      }
-
-    } catch (e) {
-      console.log("Student api error", e);
-      this.setState({ students: null, loading: false, error: "Something went wrong" });
-    }
-  }
-
   render() {
-    const { students, loading, error } = this.state;
+    const { studentsStore } = this.props;
+    const { students, loading, errorMessage } = studentsStore;
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
         {loading ? (<ActivityIndicator size="large" animating />) : students ? (
@@ -70,7 +35,7 @@ class StudentsTab extends React.Component {
             renderItem={({ item, index }) => (
               <StudentItem
                 item={item}
-                onPress={() => this.handleItemPress(item)}
+                onPress={() => this.handleItemPress(item, index)}
               />
             )
             }
@@ -80,7 +45,7 @@ class StudentsTab extends React.Component {
         ) :
           (
             <Text style={{ alignSelf: "center" }}>
-              {error}
+              {errorMessage}
             </Text>
           )}
       </View>
@@ -88,4 +53,7 @@ class StudentsTab extends React.Component {
   }
 }
 
-export default StudentsTab;
+export default inject((stores, props) => {
+  const { studentsStore } = stores;
+  return { studentsStore };
+})(observer(StudentsTab));

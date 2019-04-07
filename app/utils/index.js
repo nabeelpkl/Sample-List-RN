@@ -37,3 +37,5 @@ export function makePhoneCallWith(phone) {
     })
     .catch(err => console.log(err));
 }
+
+export { default as ApiRequest } from "./ApiRequest";
