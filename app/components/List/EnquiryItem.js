@@ -18,67 +18,69 @@ const letterCircleSize = Screen.width * .08;
 
 
 const EnquiryItem = (props) => {
-  const { item, index, onFavouritPress } = props;
+  const { item, index, onFavouritPress, onPress } = props;
   const { name, postedOn, location, categoryName, tag, providerType, isStarred, circleColor, phoneNumber } = item;
 
   return (
-    <View style={styles.rowContainer}>
+    <TouchableOpacity onPress={onPress} style={{ flex: 1 }}>
+      <View style={styles.rowContainer}>
 
-      <View >
-        <View style={[styles.letterCircle, { backgroundColor: circleColor }]}>
-          <Text style={styles.letterText}>
-            {name[0].toUpperCase()}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.infoContainer}>
-
-        <View style={styles.firstRow}>
-          <View style={styles.nameRow}>
-            <Text style={styles.nameText}>
-              {capitalizeFirstLetter(name.length > 18 ? `${name.slice(0, 18).trim()}...` : name.trim())}
-            </Text>
-            <Text style={styles.newText}>
-              New
+        <View >
+          <View style={[styles.letterCircle, { backgroundColor: circleColor }]}>
+            <Text style={styles.letterText}>
+              {name[0].toUpperCase()}
             </Text>
           </View>
-
-          <Text style={styles.dateText}>
-            {moment(postedOn, "DD/MM/YYYY").fromNow()}
-          </Text>
         </View>
-        <View style={styles.detailsRow}>
-          <View>
 
-            {renderTextRow(categoryName)}
+        <View style={styles.infoContainer}>
 
-            {renderTextRow(location)}
-
-            <View style={styles.providerRow}>
-              <Text>
-                {providerType}
+          <View style={styles.firstRow}>
+            <View style={styles.nameRow}>
+              <Text style={styles.nameText}>
+                {capitalizeFirstLetter(name.length > 18 ? `${name.slice(0, 18).trim()}...` : name.trim())}
               </Text>
-              <Image resizeMode='contain' source={Images.institute} style={styles.instituteImage} />
+              <Text style={styles.newText}>
+                New
+              </Text>
             </View>
 
-            {renderTextRow(tag)}
+            <Text style={styles.dateText}>
+              {moment(postedOn, "DD/MM/YYYY").fromNow()}
+            </Text>
+          </View>
+          <View style={styles.detailsRow}>
+            <View>
 
+              {renderTextRow(categoryName)}
+
+              {renderTextRow(location)}
+
+              <View style={styles.providerRow}>
+                <Text>
+                  {providerType}
+                </Text>
+                <Image resizeMode='contain' source={Images.institute} style={styles.instituteImage} />
+              </View>
+
+              {renderTextRow(tag)}
+
+            </View>
+
+            <View style={styles.actionColomn}>
+              <TouchableOpacity onPress={() => makePhoneCallWith(phoneNumber)}>
+                <Image resizeMode='contain' source={Images.phoneCall} style={styles.callImage} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => onFavouritPress ? onFavouritPress(index) : console.log("Inner screen")}>
+                <Image resizeMode='contain' source={isStarred ? Images.starSelected : Images.starUnselected} style={styles.favouriteImage} />
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.actionColomn}>
-            <TouchableOpacity onPress={() => makePhoneCallWith(phoneNumber)}>
-              <Image resizeMode='contain' source={Images.phoneCall} style={styles.callImage} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onFavouritPress(index)}>
-              <Image resizeMode='contain' source={isStarred ? Images.starSelected : Images.starUnselected} style={styles.favouriteImage} />
-            </TouchableOpacity>
-          </View>
         </View>
 
       </View>
-
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -138,8 +140,8 @@ const styles = StyleSheet.create({
   dateText: { fontSize: 12, color: 'grey' },
   detailsRow: { flexDirection: 'row', justifyContent: 'space-between' },
   providerRow: { flexDirection: 'row', marginVertical: 2 },
-  instituteImage: { marginLeft: 4, height: 16, width: 16 },
+  instituteImage: { marginLeft: 4, height: 18, width: 18 },
   actionColomn: { justifyContent: 'space-between' },
-  callImage: { height: 16, width: 16 },
-  favouriteImage: { height: 16, width: 16 }
+  callImage: { height: 18, width: 18 },
+  favouriteImage: { height: 18, width: 18 }
 });

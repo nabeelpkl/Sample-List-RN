@@ -36,6 +36,13 @@ class EnquiriesTab extends React.Component {
 
   };
 
+  handleItemPress = (item) => {
+    this.props.navigation.navigate('Details', {
+      data: item,
+      type: "enquiry",
+    });
+  };
+
   async getEnquiries() {
     try {
       let response = await fetch("http://www.mocky.io/v2/5c41920e0f0000543fe7b889");
@@ -54,7 +61,7 @@ class EnquiriesTab extends React.Component {
 
     } catch (e) {
       console.log("Enquiry api error", e);
-      this.setState({ enquiries: null, loading: false, error: "Sorry. Something went wrong" });
+      this.setState({ enquiries: null, loading: false, error: "Something went wrong" });
     }
   }
 
@@ -69,6 +76,7 @@ class EnquiriesTab extends React.Component {
               <EnquiryItem
                 item={item}
                 index={index}
+                onPress={() => this.handleItemPress(item)}
                 onFavouritPress={() => this.handleAddToFavourite(index)}
               />
             )}

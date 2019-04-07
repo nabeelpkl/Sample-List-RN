@@ -30,6 +30,14 @@ class StudentsTab extends React.Component {
     this.getStudentsData();
   }
 
+  handleItemPress = (item) => {
+    console.log("navigate", this.props.navigation);
+    this.props.navigation.navigate('Details', {
+      data: item,
+      type: "student",
+    });
+  };
+
   async getStudentsData() {
     try {
       let response = await fetch("http://www.mocky.io/v2/5c41950b0f0000543fe7b8a2");
@@ -48,7 +56,7 @@ class StudentsTab extends React.Component {
 
     } catch (e) {
       console.log("Student api error", e);
-      this.setState({ students: null, loading: false, error: "Sorry. Something went wrong" });
+      this.setState({ students: null, loading: false, error: "Something went wrong" });
     }
   }
 
@@ -59,7 +67,12 @@ class StudentsTab extends React.Component {
         {loading ? (<ActivityIndicator size="large" animating />) : students ? (
           <FlatList
             data={students}
-            renderItem={({ item, index }) => <StudentItem item={item} />
+            renderItem={({ item, index }) => (
+              <StudentItem
+                item={item}
+                onPress={() => this.handleItemPress(item)}
+              />
+            )
             }
             keyExtractor={item => `${item.attendeeId}`}
             ItemSeparatorComponent={Seperator}
