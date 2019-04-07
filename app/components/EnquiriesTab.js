@@ -9,6 +9,8 @@ import {
   getRandomColor,
 } from "utils";
 import EnquiryItem from "./List/EnquiryItem";
+import Seperator from './List/Seperator';
+
 class EnquiriesTab extends React.Component {
 
   constructor(props) {
@@ -71,6 +73,7 @@ class EnquiriesTab extends React.Component {
               />
             )}
             keyExtractor={item => `${item.enqId}`}
+            ItemSeparatorComponent={Seperator}
           />
         ) : (
             <Text style={{ alignSelf: "center" }}>

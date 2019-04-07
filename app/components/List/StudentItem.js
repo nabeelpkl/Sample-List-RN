@@ -20,7 +20,7 @@ const letterCircleSize = Screen.width * .08;
 
 const StudentItem = (props) => {
   const { item } = props;
-  const { name, category, batchName, phoneNumber, created, circleColor } = item;
+  const { name, category, batchName, phoneNumber, platformTag, circleColor } = item;
 
   return (
     <View style={styles.rowContainer}>
@@ -34,10 +34,16 @@ const StudentItem = (props) => {
 
       <View style={styles.infoColomn}>
         <View style={styles.mainRow}>
-          <Text style={{ fontSize: 18, fontWeight: '500' }}>
-            {capitalizeFirstLetter(name.length > 18 ? `${name.slice(0, 18).trim()}...` : name.trim())}
-          </Text>
-
+          <View style={styles.nameRow}>
+            <Text style={styles.nameText}>
+              {capitalizeFirstLetter(name.length > 18 ? `${name.slice(0, 18).trim()}...` : name.trim())}
+            </Text>
+            {platformTag ? (
+              <Text style={styles.tagText}>
+                {platformTag.toUpperCase()}
+              </Text>
+            ) : null}
+          </View>
           <Text style={styles.dateText}>
             {/* No Data Available from API */}
             {/* moment(postedOn, "DD/MM/YYYY").fromNow() */ "12/08/2019"}
@@ -95,4 +101,11 @@ const styles = StyleSheet.create({
   actionColomn: { justifyContent: 'space-around' },
   menuImage: { height: 16, width: 16, tintColor: 'grey' },
   callImage: { height: 16, width: 16 },
+  nameText: { fontSize: 18, fontWeight: '500' },
+  nameRow: { flexDirection: 'row', alignItems: "center" },
+  tagText: {
+    fontSize: 12,
+    color: '#e8732c',
+    marginHorizontal: 4,
+  },
 });

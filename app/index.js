@@ -51,7 +51,7 @@ class App extends React.Component {
 export default App;
 
 const styles = StyleSheet.create({
-  tabIndicator: { backgroundColor: '#007AFF' },
+  tabIndicator: { backgroundColor: '#1FD59C' },
   tabBar: { backgroundColor: '#efefef' },
   tabTitle: {
     fontSize: 18

@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { getRandomColor } from "utils";
 import StudentItem from "./List/StudentItem";
+import Seperator from './List/Seperator';
 class StudentsTab extends React.Component {
 
   constructor(props) {
@@ -61,6 +62,7 @@ class StudentsTab extends React.Component {
             renderItem={({ item, index }) => <StudentItem item={item} />
             }
             keyExtractor={item => `${item.attendeeId}`}
+            ItemSeparatorComponent={Seperator}
           />
         ) :
           (

@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   newText: {
     fontSize: 14,
-    color: 'orange',
+    color: '#e8732c',
     marginHorizontal: 8,
   },
   dateText: { fontSize: 12, color: 'grey' },
