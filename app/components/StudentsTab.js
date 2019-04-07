@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Text,
 } from "react-native";
-import { getRandomColor } from "utils";
 import { inject, observer } from "mobx-react";
 import StudentItem from "./List/StudentItem";
 import Seperator from './List/Seperator';

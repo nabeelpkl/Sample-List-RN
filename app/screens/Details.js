@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { inject, observer } from "mobx-react";
 import EnquiryItem from "../components/List/EnquiryItem";
 import StudentItem from "../components/List/StudentItem";
