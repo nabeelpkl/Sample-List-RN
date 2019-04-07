@@ -1,15 +1,20 @@
 import React from "react";
-import { View, FlatList, ActivityIndicator, Text, Dimensions, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  Text,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  Linking,
+  Platform,
+  Alert,
+} from "react-native";
 import moment from 'moment';
-import { getRandomColor } from "utils";
+import { getRandomColor, Screen } from "utils";
 import data from './enquiry.json';
 import Images from '../assets/images';
-
-const Screen = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height - 75
-}
-const letterCircleColors = [1, 4, 9, 12, 3];
 
 class EnquiriesTab extends React.Component {
 
@@ -39,8 +44,24 @@ class EnquiriesTab extends React.Component {
     </View>
   );
 
-  handlePhoneCall = () => {
+  handlePhoneCall = (phone) => {
     console.log("making phone call");
+    let phoneNumber = phone;
+    if (Platform.OS !== 'android') {
+      phoneNumber = `telprompt:${phone}`;
+    } else {
+      phoneNumber = `tel:${phone}`;
+    }
+
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          Alert.alert('Phone call not supported');
+        } else {
+          return Linking.openURL(phoneNumber);
+        }
+      })
+      .catch(err => console.log(err));
   };
 
   handleAddToFavourite = (index) => {
@@ -55,7 +76,7 @@ class EnquiriesTab extends React.Component {
 
   renderItem = (item, index) => {
     console.log("rendering...");
-    const { name, postedOn, location, categoryName, tag, providerType, isStarred, circleColor } = item;
+    const { name, postedOn, location, categoryName, tag, providerType, isStarred, circleColor, phoneNumber } = item;
     const letterCircleSize = Screen.width * .08;
 
     return (
@@ -104,7 +125,7 @@ class EnquiriesTab extends React.Component {
             </View>
 
             <View style={{ justifyContent: 'space-between' }}>
-              <TouchableOpacity onPress={this.handlePhoneCall}>
+              <TouchableOpacity onPress={() => this.handlePhoneCall(phoneNumber)}>
                 <Image resizeMode='contain' source={Images.phoneCall} style={{ height: 16, width: 16 }} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => this.handleAddToFavourite(index)}>

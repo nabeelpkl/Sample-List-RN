@@ -5,11 +5,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
-
-const Screen = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height - 75
-}
+import { Screen } from "utils";
 
 const Header = (props) => {
   const { title } = props;

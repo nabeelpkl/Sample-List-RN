@@ -1,15 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, SafeAreaView, Dimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-
+import { Screen } from "utils";
 import Header from "./components/Header";
 import EnquiriesTab from "./components/EnquiriesTab";
 import StudentsTab from "./components/StudentsTab";
-
-const Screen = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height - 75
-}
 
 class App extends React.Component {
   state = {
